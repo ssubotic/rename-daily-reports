@@ -1,1 +1,1 @@
-"# rename files" 
+A utility for automatically renaming nightly hotel reports.
