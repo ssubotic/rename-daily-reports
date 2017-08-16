@@ -20,7 +20,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class RenameFiles extends Application
@@ -44,8 +47,19 @@ public class RenameFiles extends Application
             }
             in.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found. Program exiting.");
-            System.exit(0);
+            //Error window popup in case "keyword bank.txt" is missing
+            VBox pane = new VBox();
+            Text text = new Text("Error.\n\"keyword bank.txt\" not found.");
+            text.setTextAlignment(TextAlignment.CENTER);
+            text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+            pane.setAlignment(Pos.CENTER);
+            pane.setPadding(new Insets(25));
+            pane.getChildren().add(text);
+            Scene scene = new Scene(pane);
+            stage.setScene(scene);
+            stage.setTitle("Error");
+            stage.show();
+            return;
         }
         
         //main pane setup
