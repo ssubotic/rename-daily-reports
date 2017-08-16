@@ -1,0 +1,14 @@
+stat
+A.01 HotelStats_
+tran
+A.02 TransactionBalRpt_
+shift
+A.03 ShiftRec_
+rate
+A.04 RateDiscrpRpt 
+guest
+A.05 GstLedgrRpt 
+aging
+A.06 AR-AgingDetailRpt 
+table
+Table of Contents 
