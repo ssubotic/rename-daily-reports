@@ -1,4 +1,4 @@
-package com.ssubotic.renamefiles;
+package com.ssubotic.report_renamer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,10 +25,10 @@ public class RenameFiles extends Application
 {   
     public void start(Stage stage)
     {
-        //pane set up
+        //main pane setup
         VBox primaryPane = new VBox(25);
         
-        Text text = new Text("This tool is for renaming nightly hotel reports. To use, copy and paste the current directory's complete filename.");
+        Text text = new Text("This tool is for renaming archival hotel reports. To use, copy and paste the current directory's complete filename.");
         Image image = new Image("img.png", 750, 250, false, false);
         ImageView imageView = new ImageView(image);
         //use a horizontal box node so label and textField are on the same line
@@ -72,34 +72,31 @@ public class RenameFiles extends Application
     
     public static void renameFile(File dir, File f) 
     {
+        String date = dir.getName();
+        
         if (f.getName().toLowerCase().contains("stat")) {
-            f.renameTo(new File(dir.getPath() + "\\A.01 HotelStats_"));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\A.01 HotelStats_" + date));
         } 
         else if (f.getName().toLowerCase().contains("tran")) {
-            f.renameTo(new File(dir.getPath() + "\\A.02 TransactionBalRpt_"));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\A.02 TransactionBalRpt_" + date));
         }
         else if (f.getName().toLowerCase().contains("shift")) {
-            f.renameTo(new File(dir.getPath() + "\\A.03 ShiftRec_"));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\A.03 ShiftRec_" + date));
         }
         else if (f.getName().toLowerCase().contains("rate")) {
-            f.renameTo(new File(dir.getPath() + "\\A.04 RateDiscrpRpt "));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\A.04 RateDiscrpRpt " + date));
         }
-        else if (f.getName().toLowerCase().contains("guest")) {
-            f.renameTo(new File(dir.getPath() + "\\A.05 GstLedgrRpt "));
-            return;
+        else if (f.getName().toLowerCase().contains("guest") || f.getName().contains("Gst")) {
+            f.renameTo(new File(dir.getPath() + "\\A.05 GstLedgrRpt " + date));
         }
         else if (f.getName().toLowerCase().contains("aging")) {
-            f.renameTo(new File(dir.getPath() + "\\A.06 AR-AgingDetailRpt "));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\A.06 AR-AgingDetailRpt" + date));
         }
         else if (f.getName().toLowerCase().contains("table")) {
-            f.renameTo(new File(dir.getPath() + "\\Table of Contents "));
-            return;
+            f.renameTo(new File(dir.getPath() + "\\Table of Contents " + date));
         }
+        
+        return;
     }
     
 }
