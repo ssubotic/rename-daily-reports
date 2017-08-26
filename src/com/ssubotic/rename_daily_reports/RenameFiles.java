@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Pattern;
+
+import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -111,10 +114,13 @@ public class RenameFiles extends Application
     public static void renameFile(File dir, File f, HashMap<String, String> filenameMap) 
     {
         String currentNameCaseInsensitive = f.getName().toLowerCase();
-        String date = dir.getName();
         for (String s : filenameMap.keySet()) {
             if (currentNameCaseInsensitive.contains(s)) {
-                f.renameTo(new File(dir.getPath() + "\\" + filenameMap.get(s) + date));
+                //create an array of single-character strings out of the directory name
+                //this allows the use of a "pseudo-regex" to reformat the date component of the name
+                String[] date = dir.getName().split("");
+                String mm_dd_yy = date[5] + date[6] + "-" + date[8] + date[9] + "-" + date[2] + date[3];
+                f.renameTo(new File(dir.getPath() + "\\" + filenameMap.get(s) + mm_dd_yy));
                 return;
             }
         }
