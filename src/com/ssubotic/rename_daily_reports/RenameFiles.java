@@ -101,7 +101,7 @@ public class RenameFiles extends Application
                 File dir = new File(input);
                 File[] reports = dir.listFiles();
                 for (File f : reports) {
-                    renameFile(dir, f, filenameMap);
+                    validateFile(dir, f, filenameMap);
                 }
             } catch (Exception e) {
                 textField.setText("Error, invalid filepath");
@@ -110,19 +110,24 @@ public class RenameFiles extends Application
         
     }
     
-    //check filename against filenameMap's keySet of Strings (keywords)
-    public static void renameFile(File dir, File f, HashMap<String, String> filenameMap) 
-    {
+    public static void validateFile(File dir, File f, HashMap<String, String> filenameMap) {
+        //check an all-lowercase version of the file's name against the HashMap's keys
         String currentNameCaseInsensitive = f.getName().toLowerCase();
         for (String s : filenameMap.keySet()) {
             if (currentNameCaseInsensitive.contains(s)) {
-                //create an array of single-character strings out of the directory name
-                //this allows the use of a "pseudo-regex" to reformat the date component of the name
-                String[] date = dir.getName().split("");
-                String mm_dd_yy = date[5] + date[6] + "-" + date[8] + date[9] + "-" + date[2] + date[3];
-                f.renameTo(new File(dir.getPath() + "\\" + filenameMap.get(s) + mm_dd_yy));
-                return;
-            }
+                renameFile(dir, f, filenameMap.get(s));
+            }    
         }
+        return;
+    }
+    
+    public static void renameFile(File dir, File f, String newName) 
+    {
+        //create an array of single-character strings out of the directory name
+        //this allows the use of a "pseudo-regex" to reformat the date component of the name
+        String[] date = dir.getName().split("");
+        String mm_dd_yy = date[5] + date[6] + "-" + date[8] + date[9] + "-" + date[2] + date[3];
+        f.renameTo(new File(dir.getPath() + "\\" + newName + mm_dd_yy));
+        return;
     }
 }
