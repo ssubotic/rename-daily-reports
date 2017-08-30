@@ -138,6 +138,9 @@ public class RenameFiles extends Application
         String fileName = f.getName();
         //find the last occurrence of a period in the filename to know where the extension starts
         int fileExtensionStartIndex = fileName.lastIndexOf(".");
+        if (fileExtensionStartIndex == -1) {
+            return "";
+        }
         String fileExtension = fileName.substring(fileExtensionStartIndex);
         return fileExtension;
     }
