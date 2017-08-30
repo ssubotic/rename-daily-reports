@@ -122,7 +122,7 @@ public class RenameFiles extends Application
         return;
     }
     
-    public static void renameFile(File dir, File f, String newName) 
+    private static void renameFile(File dir, File f, String newName) 
     {
         //create an array of single-character strings out of the directory name
         //this allows the use of a "pseudo-regex" to reformat the date component of the name
