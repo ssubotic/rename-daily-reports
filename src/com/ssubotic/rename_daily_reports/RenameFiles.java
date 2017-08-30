@@ -96,18 +96,22 @@ public class RenameFiles extends Application
         
         //ActionEvent for the "Submit" button press action
         button.setOnAction((event) -> {
-            try {
-                String input = textField.getText();
-                File dir = new File(input);
-                File[] reports = dir.listFiles();
-                for (File f : reports) {
-                    validateFile(dir, f, filenameMap);
-                }
-            } catch (Exception e) {
-                textField.setText("Error, invalid filepath");
-            }
+            submitFilePath(textField, filenameMap);
         });
         
+    }
+    
+    private static void submitFilePath(TextField tf, HashMap<String, String> filenameMap) {
+        try {
+            String input = tf.getText();
+            File dir = new File(input);
+            File[] reports = dir.listFiles();
+            for (File f : reports) {
+                validateFile(dir, f, filenameMap);
+            }
+        } catch (Exception e) {
+            tf.setText("Error, invalid filepath");
+        }
     }
     
     public static void validateFile(File dir, File f, HashMap<String, String> filenameMap) 
