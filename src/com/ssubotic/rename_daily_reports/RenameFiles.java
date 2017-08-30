@@ -81,11 +81,13 @@ public class RenameFiles extends Application
         HBox inputPane = new HBox(10);
         Label label = new Label("File Path: ");
         TextField textField = new TextField();
-        Button button = new Button("Submit");
+        Button submitButton = new Button("Submit");
+        Button clearButton = new Button("Clear");
         inputPane.getChildren().add(label);
         inputPane.getChildren().add(textField);
         inputPane.setAlignment(Pos.CENTER);
-        inputPane.getChildren().add(button);
+        inputPane.getChildren().add(submitButton);
+        inputPane.getChildren().add(clearButton);
         //add text, image, and inputPane to the primary pane
         primaryPane.getChildren().add(text);
         primaryPane.getChildren().add(imageView);
@@ -99,22 +101,27 @@ public class RenameFiles extends Application
         stage.setScene(scene);
         stage.show();
         
-        //ActionEvent for the "Submit" button press action
-        button.setOnAction((event) -> {
-            submitFilePath(textField, filenameMap);
-            textField.requestFocus();
-        });
-        
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.ENTER) {
                     submitFilePath(textField, filenameMap);
-                    button.arm();
+                    submitButton.arm();
                     PauseTransition pause = new PauseTransition(Duration.seconds(0.1));
-                    pause.setOnFinished(e -> button.disarm());
+                    pause.setOnFinished(e -> submitButton.disarm());
                     pause.play();
                 }
             }
+        });
+        
+        //ActionEvent for the "Submit" button press action
+        submitButton.setOnAction((event) -> {
+            submitFilePath(textField, filenameMap);
+            textField.requestFocus();
+        });
+        
+        clearButton.setOnAction((event) -> {
+            textField.setText("");
+            textField.requestFocus();
         });
         
     }
