@@ -110,7 +110,8 @@ public class RenameFiles extends Application
         
     }
     
-    public static void validateFile(File dir, File f, HashMap<String, String> filenameMap) {
+    public static void validateFile(File dir, File f, HashMap<String, String> filenameMap) 
+    {
         //check an all-lowercase version of the file's name against the HashMap's keys
         String currentNameCaseInsensitive = f.getName().toLowerCase();
         for (String s : filenameMap.keySet()) {
@@ -126,8 +127,18 @@ public class RenameFiles extends Application
         //create an array of single-character strings out of the directory name
         //this allows the use of a "pseudo-regex" to reformat the date component of the name
         String[] date = dir.getName().split("");
+        String fileExtension = getFileExtension(f);
         String mm_dd_yy = date[5] + date[6] + "-" + date[8] + date[9] + "-" + date[2] + date[3];
-        f.renameTo(new File(dir.getPath() + "\\" + newName + mm_dd_yy));
+        f.renameTo(new File(dir.getPath() + "\\" + newName + mm_dd_yy + fileExtension));
         return;
+    }
+
+    private static String getFileExtension(File f) 
+    {
+        String fileName = f.getName();
+        //find the last occurrence of a period in the filename to know where the extension starts
+        int fileExtensionStartIndex = fileName.lastIndexOf(".");
+        String fileExtension = fileName.substring(fileExtensionStartIndex);
+        return fileExtension;
     }
 }
