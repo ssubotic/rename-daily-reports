@@ -102,6 +102,7 @@ public class RenameFiles extends Application
         //ActionEvent for the "Submit" button press action
         button.setOnAction((event) -> {
             submitFilePath(textField, filenameMap);
+            textField.requestFocus();
         });
         
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
