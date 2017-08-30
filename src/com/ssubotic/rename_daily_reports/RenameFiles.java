@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 
 import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,6 +21,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -28,6 +32,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class RenameFiles extends Application
 {   
@@ -97,6 +102,18 @@ public class RenameFiles extends Application
         //ActionEvent for the "Submit" button press action
         button.setOnAction((event) -> {
             submitFilePath(textField, filenameMap);
+        });
+        
+        textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                if (ke.getCode() == KeyCode.ENTER) {
+                    submitFilePath(textField, filenameMap);
+                    button.arm();
+                    PauseTransition pause = new PauseTransition(Duration.seconds(0.1));
+                    pause.setOnFinished(e -> button.disarm());
+                    pause.play();
+                }
+            }
         });
         
     }
