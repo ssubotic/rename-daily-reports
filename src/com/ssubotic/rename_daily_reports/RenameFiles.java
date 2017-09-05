@@ -2,13 +2,16 @@ package com.ssubotic.rename_daily_reports;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -25,9 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -40,7 +41,8 @@ public class RenameFiles extends Application
 {   
     HashMap<String, String> filenameMap = new HashMap<String, String>();
     File wordBank = new File("res\\keyword bank.txt");
-    boolean folderModeEnabled = false;
+    static boolean folderModeEnabled = false;
+    String[] day = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
     
     public void start(Stage stage)
     {
@@ -160,15 +162,29 @@ public class RenameFiles extends Application
             String input = tf.getText();
             File dir = new File(input);
             File[] reports = dir.listFiles();
-            for (File f : reports) {
-                validateFile(dir, f, filenameMap);
+            if (!folderModeEnabled) {
+                for (File f : reports) {
+                    validateFile(dir, f, filenameMap);
+                }
+            } else {
+                String[] tokens = dir.getName().split("-");
+                int dayCount = 1;
+                for (File f : reports) {
+                    LocalDate lc = LocalDate.of(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), dayCount);
+                    String year = tokens[0];
+                    String month = tokens[1];
+                    String formattedDayCount = (dayCount < 10) ? "0" + String.valueOf(dayCount) : String.valueOf(dayCount);
+                    String dayName = lc.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
+                    renameFolder(dir, f, year, month, formattedDayCount, dayName);
+                    dayCount++;
+                }
             }
         } catch (Exception e) {
             tf.setText("Error, invalid filepath");
         }
     }
     
-    public static void validateFile(File dir, File f, HashMap<String, String> filenameMap) 
+    private static void validateFile(File dir, File f, HashMap<String, String> filenameMap) 
     {
         //check an all-lowercase version of the file's name against the HashMap's keys
         String currentNameCaseInsensitive = f.getName().toLowerCase();
@@ -201,5 +217,9 @@ public class RenameFiles extends Application
         }
         String fileExtension = fileName.substring(fileExtensionStartIndex);
         return fileExtension;
+    }
+    
+    private static void renameFolder(File dir, File f, String year, String month, String dayNumber, String dayName) {
+        f.renameTo(new File(dir.getPath() + "\\" + year + "-" + month + "-" + dayNumber + "-" + dayName));
     }
 }
