@@ -227,7 +227,8 @@ public class RenameFiles extends Application
     
     //renaming method used when in folder mode
     private static void renameFolder(File dir, File f, String year, String month, 
-            String dayNumber, String dayName) {
+            String dayNumber, String dayName) 
+    {
         f.renameTo(new File(dir.getPath() + "\\" + year + "-" + month 
                 + "-" + dayNumber + "-" + dayName));
     }
