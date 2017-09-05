@@ -2,13 +2,8 @@ package com.ssubotic.rename_daily_reports;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
@@ -42,7 +37,6 @@ public class RenameFiles extends Application
     HashMap<String, String> filenameMap = new HashMap<String, String>();
     File wordBank = new File("res\\keyword bank.txt");
     static boolean folderModeEnabled = false;
-    String[] day = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
     
     public void start(Stage stage)
     {
@@ -95,6 +89,7 @@ public class RenameFiles extends Application
         reportMode.setToggleGroup(toggleGroup);
         folderMode.setToggleGroup(toggleGroup);
         radioButtons.getChildren().addAll(reportMode, folderMode);
+        //negative left-side padding so that radio buttons are on the left
         radioButtons.setPadding(new Insets(0,0,0,-150));
         
         //the filepath input field, its label, and buttons for submitting input and clearing the field
@@ -122,12 +117,17 @@ public class RenameFiles extends Application
         reportMode.setOnAction((event) -> {
             switchMode();
         });
-        
         folderMode.setOnAction((event) -> {
             switchMode();
         });
         
-        //allows use of the Enter key instead of clicking the submit button
+        //submits input in the TextField when the submit button is pressed 
+        submitButton.setOnAction((event) -> {
+            submitFilePath(textField, filenameMap);
+            textField.requestFocus();
+        });
+        
+        //allows use of the Enter key instead of having to click the submit button
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.ENTER) {
@@ -140,18 +140,14 @@ public class RenameFiles extends Application
             }
         });
         
-        //ActionEvent for the "Submit" button press action
-        submitButton.setOnAction((event) -> {
-            submitFilePath(textField, filenameMap);
-            textField.requestFocus();
-        });
-        
+        //clears the input TextField when the clear button is pressed
         clearButton.setOnAction((event) -> {
             textField.setText("");
             textField.requestFocus();
         });
     }
     
+    //called when either the "Report Mode" or "Folder Mode" radio buttons are selected
     private void switchMode() {
         folderModeEnabled = !folderModeEnabled;
     }
@@ -162,28 +158,37 @@ public class RenameFiles extends Application
             String input = tf.getText();
             File dir = new File(input);
             File[] reports = dir.listFiles();
+            
+            //in report mode check each file in the folder to see if it needs renaming
             if (!folderModeEnabled) {
                 for (File f : reports) {
                     validateFile(dir, f, filenameMap);
                 }
+            //in folder mode use the folder name format yyyy-mm-MonthName and the LocalDate class
+            //from java.time to rename each internal directory with a different number for the day
             } else {
                 String[] tokens = dir.getName().split("-");
                 int dayCount = 1;
                 for (File f : reports) {
-                    LocalDate lc = LocalDate.of(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), dayCount);
+                    LocalDate lc = LocalDate.of(Integer.parseInt(tokens[0]), 
+                                                Integer.parseInt(tokens[1]), 
+                                                dayCount);
                     String year = tokens[0];
                     String month = tokens[1];
-                    String formattedDayCount = (dayCount < 10) ? "0" + String.valueOf(dayCount) : String.valueOf(dayCount);
+                    String formattedDayCount = (dayCount < 10) ? "0" + String.valueOf(dayCount) 
+                                                               : String.valueOf(dayCount);
                     String dayName = lc.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
                     renameFolder(dir, f, year, month, formattedDayCount, dayName);
                     dayCount++;
                 }
             }
+        //show error notification in input TextField if previous input was invalid
         } catch (Exception e) {
             tf.setText("Error, invalid filepath");
         }
     }
     
+    //check file name against keywords.txt (report mode only)
     private static void validateFile(File dir, File f, HashMap<String, String> filenameMap) 
     {
         //check an all-lowercase version of the file's name against the HashMap's keys
@@ -195,7 +200,8 @@ public class RenameFiles extends Application
         }
         return;
     }
-    
+
+    //renaming function when in report mode
     private static void renameFile(File dir, File f, String newName) 
     {
         //create an array of single-character strings out of the directory name
@@ -219,7 +225,10 @@ public class RenameFiles extends Application
         return fileExtension;
     }
     
-    private static void renameFolder(File dir, File f, String year, String month, String dayNumber, String dayName) {
-        f.renameTo(new File(dir.getPath() + "\\" + year + "-" + month + "-" + dayNumber + "-" + dayName));
+    //renaming method used when in folder mode
+    private static void renameFolder(File dir, File f, String year, String month, 
+            String dayNumber, String dayName) {
+        f.renameTo(new File(dir.getPath() + "\\" + year + "-" + month 
+                + "-" + dayNumber + "-" + dayName));
     }
 }
