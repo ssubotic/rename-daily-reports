@@ -38,10 +38,12 @@ import javafx.util.Duration;
 
 public class RenameFiles extends Application
 {   
+    HashMap<String, String> filenameMap = new HashMap<String, String>();
+    File wordBank = new File("res\\keyword bank.txt");
+    boolean folderModeEnabled = false;
+    
     public void start(Stage stage)
     {
-        HashMap<String, String> filenameMap = new HashMap<String, String>();
-        File wordBank = new File("res\\keyword bank.txt");
         try {
             /*
              * Inputs key-value pairs of Strings from "res/keyword bank.txt" into filenameMap.
@@ -85,6 +87,7 @@ public class RenameFiles extends Application
         //create radio buttons to determine whether user is renaming reports or their housing folders
         VBox radioButtons = new VBox(10);
         RadioButton reportMode = new RadioButton("Report Mode");
+        reportMode.setSelected(true);
         RadioButton folderMode = new RadioButton("Folder Mode");
         ToggleGroup toggleGroup = new ToggleGroup();
         reportMode.setToggleGroup(toggleGroup);
@@ -112,7 +115,17 @@ public class RenameFiles extends Application
         stage.setTitle("Report Renamer");
         stage.setScene(scene);
         stage.show();
+
+        //methods to allow switching between report and folder mode
+        reportMode.setOnAction((event) -> {
+            switchMode();
+        });
         
+        folderMode.setOnAction((event) -> {
+            switchMode();
+        });
+        
+        //allows use of the Enter key instead of clicking the submit button
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.ENTER) {
@@ -135,7 +148,10 @@ public class RenameFiles extends Application
             textField.setText("");
             textField.requestFocus();
         });
-        
+    }
+    
+    private void switchMode() {
+        folderModeEnabled = !folderModeEnabled;
     }
     
     private static void submitFilePath(TextField tf, HashMap<String, String> filenameMap) 
