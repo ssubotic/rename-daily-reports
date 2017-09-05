@@ -18,7 +18,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -79,15 +81,31 @@ public class RenameFiles extends Application
         ImageView imageView = new ImageView(image);
         //use a horizontal box node around label and textField so that they're the same line
         HBox inputPane = new HBox(10);
+        
+        //create radio buttons to determine whether user is renaming reports or their housing folders
+        VBox radioButtons = new VBox(10);
+        RadioButton reportMode = new RadioButton("Report Mode");
+        RadioButton folderMode = new RadioButton("Folder Mode");
+        ToggleGroup toggleGroup = new ToggleGroup();
+        reportMode.setToggleGroup(toggleGroup);
+        folderMode.setToggleGroup(toggleGroup);
+        radioButtons.getChildren().addAll(reportMode, folderMode);
+        radioButtons.setPadding(new Insets(0,0,0,-150));
+        
+        //the filepath input field, its label, and buttons for submitting input and clearing the field
         Label label = new Label("File Path: ");
         TextField textField = new TextField();
         Button submitButton = new Button("Submit");
         Button clearButton = new Button("Clear");
+        
+        //adding inner nodes(mode select & path input) to inputPane
+        inputPane.getChildren().add(radioButtons);
         inputPane.getChildren().add(label);
         inputPane.getChildren().add(textField);
-        inputPane.setAlignment(Pos.CENTER);
         inputPane.getChildren().add(submitButton);
         inputPane.getChildren().add(clearButton);
+        inputPane.setAlignment(Pos.CENTER);
+        
         //add text, image, and inputPane to the primary pane
         primaryPane.getChildren().add(text);
         primaryPane.getChildren().add(imageView);
@@ -126,7 +144,8 @@ public class RenameFiles extends Application
         
     }
     
-    private static void submitFilePath(TextField tf, HashMap<String, String> filenameMap) {
+    private static void submitFilePath(TextField tf, HashMap<String, String> filenameMap) 
+    {
         try {
             String input = tf.getText();
             File dir = new File(input);
