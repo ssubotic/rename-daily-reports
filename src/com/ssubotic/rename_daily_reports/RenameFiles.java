@@ -99,17 +99,11 @@ public class RenameFiles extends Application
         Button clearButton = new Button("Clear");
         
         //adding inner nodes(mode select & path input) to inputPane
-        inputPane.getChildren().add(radioButtons);
-        inputPane.getChildren().add(label);
-        inputPane.getChildren().add(textField);
-        inputPane.getChildren().add(submitButton);
-        inputPane.getChildren().add(clearButton);
+        inputPane.getChildren().addAll(radioButtons, label, textField, submitButton, clearButton);
         inputPane.setAlignment(Pos.CENTER);
         
         //add text, image, and inputPane to the primary pane
-        primaryPane.getChildren().add(text);
-        primaryPane.getChildren().add(imageView);
-        primaryPane.getChildren().add(inputPane);
+        primaryPane.getChildren().addAll(text, imageView, inputPane);
         primaryPane.setAlignment(Pos.CENTER);
         primaryPane.setPadding(new Insets(10, 10, 10, 10));
         
