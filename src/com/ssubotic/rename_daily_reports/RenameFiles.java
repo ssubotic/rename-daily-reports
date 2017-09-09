@@ -34,12 +34,12 @@ import javafx.util.Duration;
 
 public class RenameFiles extends Application
 {   
-    HashMap<String, String> filenameMap = new HashMap<String, String>();
-    File wordBank = new File("res\\keyword bank.txt");
+    static HashMap<String, String> filenameMap = new HashMap<String, String>();
+    File wordBank = new File("res/keyword bank.txt");
     static boolean folderModeEnabled = false;
     
     public void start(Stage stage)
-    {
+    {    
         try {
             /*
              * Inputs key-value pairs of Strings from "res/keyword bank.txt" into filenameMap.
@@ -148,7 +148,8 @@ public class RenameFiles extends Application
     }
     
     //called when either the "Report Mode" or "Folder Mode" radio buttons are selected
-    private void switchMode() {
+    private void switchMode() 
+    {
         folderModeEnabled = !folderModeEnabled;
     }
     
@@ -231,5 +232,13 @@ public class RenameFiles extends Application
     {
         f.renameTo(new File(dir.getPath() + "\\" + year + "-" + month 
                 + "-" + dayNumber + "-" + dayName));
+        File[] internalReports = f.listFiles();
+        for (File innerFile : internalReports) {
+            validateFile(f, innerFile, filenameMap);
+        }
+    }
+    
+    public static void main(String[] args) {
+        launch(args);
     }
 }
